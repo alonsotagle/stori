@@ -12,7 +12,7 @@ def download_transactions_file(event: dict) -> str:
     key = event["Records"][0]["s3"]["object"]["key"]
 
     s3 = boto3.client("s3")
-    with NamedTemporaryFile() as f:
+    with NamedTemporaryFile(delete=False) as f:
         s3.download_fileobj(bucket, key, f)
 
     return f.name
