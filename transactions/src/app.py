@@ -25,7 +25,7 @@ def generate_transactions() -> str:
         file_writer = DictWriter(temp_file, fieldnames=["Id", "Date", "Transaction"])
         file_writer.writeheader()
 
-        for i in range(environ.get("TRANSACTIONS_COUNT", 1000)):
+        for i in range(int(environ.get("TRANSACTIONS_COUNT", "100"))):
             row = {
                 "Id": i,
                 "Date": get_random_datetime(),
