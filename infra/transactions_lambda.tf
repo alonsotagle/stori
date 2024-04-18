@@ -37,9 +37,9 @@ EOF
 }
 
 resource "aws_iam_policy" "transactions_policy" {
-  name        = "transactions_policy"
-  path        = "/"
-  policy      = <<EOF
+  name   = "transactions_policy"
+  path   = "/"
+  policy = <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [

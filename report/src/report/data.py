@@ -2,6 +2,7 @@ import boto3
 import json
 import pandas as pd
 
+from os import environ
 from tempfile import NamedTemporaryFile
 
 
@@ -43,7 +44,7 @@ def store_transactions(filename: str):
     transactions = json.loads(pd.read_csv(filename).to_json(orient="records"))
 
     dynamodb = boto3.resource("dynamodb")
-    table = dynamodb.Table("Transactions")
+    table = dynamodb.Table(environ.get("TRANSACTIONS_TABLE"))
     
     for record in transactions:
         table.put_item(Item=record)
