@@ -1,5 +1,5 @@
-from report.src.report.data import analyze_data, download_transactions_file, store_transactions
-from report.src.report.email import send_report
+from data import analyze_data, download_transactions_file, store_transactions
+from ses_email import send_report
 
 
 def main(event, context):
