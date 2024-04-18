@@ -13,5 +13,6 @@ module "lambda_function" {
 
   environment_variables = {
     TRANSACTIONS_COUNT = "1000"
+    TRANSACTIONS_BUCKET = aws_s3_bucket.bucket.id
   }
 }

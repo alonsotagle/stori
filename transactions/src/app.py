@@ -1,4 +1,4 @@
-# import boto3
+import boto3
 import random
 
 from csv import DictWriter
@@ -38,11 +38,6 @@ def generate_transactions() -> str:
 
 
 def upload_transactions_file(file_path: str):
-    return print(file_path)
     s3_client = boto3.client("s3")
     s3_client.upload_file(file_path, environ.get("TRANSACTIONS_BUCKET", "test"), f"{time_ns()}.csv")
     return "Transaction uploaded successfully!"
-
-
-if __name__ == '__main__':
-    main()
