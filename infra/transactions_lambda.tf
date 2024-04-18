@@ -4,7 +4,7 @@ module "lambda_function" {
   function_name = "transactions"
   description   = "Create an upload transactions"
   handler       = "app.main"
-  runtime       = "python3.10"
+  runtime       = "python3.12"
 
   source_path = "../transactions/src"
 
