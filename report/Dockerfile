@@ -4,6 +4,6 @@ COPY requirements.txt ${LAMBDA_TASK_ROOT}
 
 RUN pip install -r requirements.txt
 
-COPY report/src/report ${LAMBDA_TASK_ROOT}
+COPY src/report ${LAMBDA_TASK_ROOT}
 
-CMD [ "app.main" ]
+CMD [ "report.app.main" ]
