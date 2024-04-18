@@ -6,7 +6,7 @@ module "lambda_function" {
   handler       = "app.main"
   runtime       = "python3.10"
 
-  source_path = "../transactions/src/transactions"
+  source_path = "../transactions/src"
 
   create_role = false
   lambda_role = "arn:aws:iam::654654472464:role/tfc"
