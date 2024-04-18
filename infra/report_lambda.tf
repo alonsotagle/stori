@@ -73,3 +73,19 @@ resource "aws_iam_role_policy_attachment" "report_attach_policy_role" {
   role       = aws_iam_role.report_role.name
   policy_arn = aws_iam_policy.report_policy.arn
 }
+
+resource "aws_s3_bucket_notification" "trigger" {
+  bucket = aws_s3_bucket.bucket.id
+  lambda_function {
+    lambda_function_arn = module.lambda_function_container_image.lambda_function_arn
+    events              = ["s3:ObjectCreated:*"]
+  }
+}
+
+resource "aws_lambda_permission" "invoke" {
+  statement_id  = "AllowS3Invoke"
+  action        = "lambda:InvokeFunction"
+  function_name = module.lambda_function_container_image.lambda_function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = "arn:aws:s3:::${aws_s3_bucket.bucket.id}"
+}
