@@ -1,0 +1,33 @@
+name: Push new ECR image
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  push_image:
+    name: Docker image
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::654654472464:role/github
+          role-duration-seconds: 3600
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: transactions-report
+        run: |
+          docker build -f report/Dockerfile -t $REGISTRY/$REPOSITORY:latest report
+          docker push $REGISTRY/$REPOSITORY:latest
