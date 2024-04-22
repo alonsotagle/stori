@@ -1,16 +1,17 @@
 module "lambda_function_container_image" {
   source = "terraform-aws-modules/lambda/aws"
 
-  function_name = "report"
+  function_name  = "report"
   create_package = false
-  create_role = false
-  lambda_role = aws_iam_role.report_role.arn
+  create_role    = false
+  lambda_role    = aws_iam_role.report_role.arn
+  timeout        = 600
 
   image_uri    = "${aws_ecr_repository.report.repository_url}:latest"
   package_type = "Image"
 
   environment_variables = {
-    TRANSACTIONS_TABLE  = aws_dynamodb_table.transactions.name
+    TRANSACTIONS_TABLE = aws_dynamodb_table.transactions.name
   }
 }
 

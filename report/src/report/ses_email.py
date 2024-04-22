@@ -7,12 +7,12 @@ def send_report(data: dict):
     ses = boto3.client("ses")
 
     response = ses.send_templated_email(
-        Source="alonsotaglecom@gmail.com",
+        Source="hire@alonsotagle.com",
         Destination={
-            "ToAddresses": ["alonsotaglecom+stori@gmail.com"],
+            "ToAddresses": ["hire@alonsotagle.com"],
             "CcAddresses": []
         },
-        ReplyToAddresses=["alonsotaglecom@gmail.com"],
+        ReplyToAddresses=["hire@alonsotagle.com"],
         Template="report",
         TemplateData=json.dumps(data)
     )

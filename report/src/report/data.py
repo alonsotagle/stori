@@ -1,12 +1,13 @@
 import boto3
-import json
 import pandas as pd
 
+from decimal import Decimal
+from json import dumps, loads
 from os import environ
 from tempfile import NamedTemporaryFile
 
 
-def download_transactions_file(event: dict) -> str:
+def download_transactions_file(event: dict) -> tuple:
 
     bucket = event["Records"][0]["s3"]["bucket"]["name"]
     key = event["Records"][0]["s3"]["object"]["key"]
@@ -15,10 +16,10 @@ def download_transactions_file(event: dict) -> str:
     with NamedTemporaryFile(delete=False) as f:
         s3.download_fileobj(bucket, key, f)
 
-    return f.name
+    return f.name, get_presigned_url(s3, bucket, key)
 
 
-def analyze_data(filename: str) -> dict:
+def analyze_data(filename: str, presigned_url: str) -> dict:
 
     df = pd.read_csv(filename)
 
@@ -30,6 +31,7 @@ def analyze_data(filename: str) -> dict:
         "balance": df.Transaction.sum().round(2),
         "credit": df[df.Transaction > 0].Transaction.mean().round(2),
         "debit": df[df.Transaction < 0].Transaction.mean().round(2),
+        "file": presigned_url,
         "transactions": [
             {
                 "count": count,
@@ -41,10 +43,22 @@ def analyze_data(filename: str) -> dict:
 
 def store_transactions(filename: str):
 
-    transactions = json.loads(pd.read_csv(filename).to_json(orient="records"))
+    transactions = loads(pd.read_csv(filename).to_json(orient="records"), parse_float=Decimal)
 
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.Table(environ.get("TRANSACTIONS_TABLE"))
     
     for record in transactions:
         table.put_item(Item=record)
+
+
+def get_presigned_url(s3, bucket: str, key: str) -> str:
+
+    return s3.generate_presigned_url(
+        ClientMethod="get_object",
+        Params={
+            "Bucket": bucket,
+            "Key": key,
+        },
+        ExpiresIn=3600,
+    )

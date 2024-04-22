@@ -8,19 +8,21 @@ def test_analyze_data(monkeypatch, request):
     path = pathlib.Path(request.node.fspath)
     sample_file = path.with_name("sample.csv")
 
-    monkeypatch.setattr(data, "download_transactions_file", lambda *args, **kwargs: sample_file)
+    monkeypatch.setattr(data, "download_transactions_file", lambda *args, **kwargs: sample_file, "url")
 
-    result = analyze_data(sample_file)
+    result = analyze_data(sample_file, "url")
 
     assert isinstance(result, dict)
     assert "balance" in result
     assert "credit" in result
     assert "debit" in result
+    assert "file" in result
     assert "transactions" in result
     assert result == {
         "balance": 1660.01,
         "credit": 56.3,
         "debit": -53.86,
+        "file": "url",
         "transactions": [
             {"count": 95, "month": "January"},
             {"count": 73, "month": "February"},

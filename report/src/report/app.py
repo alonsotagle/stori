@@ -3,8 +3,8 @@ from ses_email import send_report
 
 
 def main(event, context):
-    filename = download_transactions_file(event)
+    filename, presigned_url = download_transactions_file(event)
     store_transactions(filename)
 
-    data = analyze_data(filename)
+    data = analyze_data(filename, presigned_url)
     send_report(data)

@@ -6,6 +6,8 @@ This project provides a solution for processing a file containing debit and cred
 
 The system consists of a script written in Python that processes the transaction file. It identifies debit and credit transactions based on the presence of a minus (-) or plus (+) sign, respectively. Summary information is then extracted and sent to the user via email.
 
+![Arch diagram](arch.png?raw=true "Arch diagram")
+
 ## Technologies Used
 - Python
 - Pytest

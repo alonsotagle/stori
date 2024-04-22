@@ -5,6 +5,6 @@ resource "aws_dynamodb_table" "transactions" {
 
   attribute {
     name = "Id"
-    type = "S"
+    type = "N"
   }
 }
