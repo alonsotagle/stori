@@ -36,39 +36,42 @@ EOF
 }
 
 resource "aws_iam_policy" "report_policy" {
-  name   = "report_policy"
-  path   = "/"
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:*:*:*",
-            "Effect": "Allow"
-        },
-        {
-            "Action": [
-                "s3:GetObject"
-            ],
-            "Resource": "arn:aws:s3:::report-transactions/*",
-            "Effect": "Allow"
-        },
-        {
-            "Action": [
-                "ses:*",
-                "dynamodb:*"
-            ],
-            "Resource": "*",
-            "Effect": "Allow"
+  name = "report_policy"
+  path = "/"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Action   = ["s3:GetObject", "s3:HeadObject"]
+        Effect   = "Allow"
+        Resource = "${aws_s3_bucket.bucket.arn}/*"
+      },
+      {
+        Action   = ["dynamodb:Query", "dynamodb:Scan", "dynamodb:PutItem"]
+        Effect   = "Allow"
+        Resource = aws_dynamodb_table.transactions.arn
+      },
+      {
+        Action   = ["ses:SendEmail", "ses:SendTemplatedEmail"]
+        Effect   = "Allow"
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "ses:FromAddress" = var.email
+          }
         }
+      }
     ]
-}
-EOF
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "report_attach_policy_role" {
