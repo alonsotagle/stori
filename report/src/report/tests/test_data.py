@@ -16,13 +16,12 @@ def test_analyze_data(monkeypatch, request):
     assert "balance" in result
     assert "credit" in result
     assert "debit" in result
-    assert "file" in result
     assert "transactions" in result
+    assert "url" in result
     assert result == {
         "balance": 1660.01,
         "credit": 56.3,
         "debit": -53.86,
-        "file": "url",
         "transactions": [
             {"count": 95, "month": "January"},
             {"count": 73, "month": "February"},
@@ -36,5 +35,6 @@ def test_analyze_data(monkeypatch, request):
             {"count": 83, "month": "October"},
             {"count": 88, "month": "November"},
             {"count": 72, "month": "December"}
-        ]
+        ],
+        "url": "url"
     }

@@ -2,7 +2,7 @@ import boto3
 import pandas as pd
 
 from decimal import Decimal
-from json import dumps, loads
+from json import loads
 from os import environ
 from tempfile import NamedTemporaryFile
 
@@ -31,7 +31,7 @@ def analyze_data(filename: str, presigned_url: str) -> dict:
         "balance": df.Transaction.sum().round(2),
         "credit": df[df.Transaction > 0].Transaction.mean().round(2),
         "debit": df[df.Transaction < 0].Transaction.mean().round(2),
-        "file": presigned_url,
+        "url": presigned_url,
         "transactions": [
             {
                 "count": count,
@@ -41,7 +41,7 @@ def analyze_data(filename: str, presigned_url: str) -> dict:
     }
 
 
-def store_transactions(filename: str):
+def store_transactions(filename: str) -> None:
 
     transactions = loads(pd.read_csv(filename).to_json(orient="records"), parse_float=Decimal)
 

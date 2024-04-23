@@ -12,6 +12,7 @@ module "lambda_function_container_image" {
 
   environment_variables = {
     TRANSACTIONS_TABLE = aws_dynamodb_table.transactions.name
+    VERIFIED_EMAIL     = var.email
   }
 }
 

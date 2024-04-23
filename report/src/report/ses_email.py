@@ -1,20 +1,20 @@
 import boto3
-import json
+
+from json import dumps
+from os import environ
 
 
-def send_report(data: dict):
+def send_report(data: dict) -> None:
 
     ses = boto3.client("ses")
 
-    response = ses.send_templated_email(
-        Source="hire@alonsotagle.com",
+    ses.send_templated_email(
+        Source=environ.get("VERIFIED_EMAIL"),
         Destination={
-            "ToAddresses": ["hire@alonsotagle.com"],
+            "ToAddresses": [environ.get("VERIFIED_EMAIL")],
             "CcAddresses": []
         },
-        ReplyToAddresses=["hire@alonsotagle.com"],
+        ReplyToAddresses=[environ.get("VERIFIED_EMAIL")],
         Template="report",
-        TemplateData=json.dumps(data)
+        TemplateData=dumps(data)
     )
-
-    print(response)
